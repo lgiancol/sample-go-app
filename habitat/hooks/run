@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec sample-go-app 2>&1
