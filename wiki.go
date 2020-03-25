@@ -5,38 +5,29 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 )
 
-type Page struct {
-	Title string
-	Body  []byte
+func handler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, loadIndex())
 }
 
-func (p *Page) save() error {
-	filename := p.Title + ".txt"
-	return ioutil.WriteFile(filename, p.Body, 0600)
-}
-
-func loadPage(title string) (*Page, error) {
-	filename := title + ".txt"
-	body, err := ioutil.ReadFile(filename)
+func loadFile(path string) string {
+	body, err := ioutil.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return err.Error()
 	}
 
-	return &Page{Title: title, Body: body}, nil
+	return string(body)
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+func loadIndex() string {
+	return loadFile("src/index.html")
 }
 
 func main() {
-	// p1 := &Page{Title: "TestPage", Body: []byte("This is a sample page.")}
-	// p1.save()
-	// p2, _ := loadPage("TestPage")
-	// fmt.Println(string(p2.Body))
+	var port = os.Getenv("port")
 
 	http.HandleFunc("/", handler)
-	log.Fatal(http.ListenAndServe(":2345", nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
