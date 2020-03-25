@@ -22,7 +22,7 @@ func loadFile(path string) string {
 }
 
 func loadIndex() string {
-	return loadFile("src/index.html")
+	return loadFile("index.html")
 }
 
 func main() {
